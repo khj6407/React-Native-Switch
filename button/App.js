@@ -1,21 +1,26 @@
 import React, { Component } from "react";
-import { StyleSheet, DatePickerIOS, Text, View, Switch } from "react-native";
-// import DateTimePicker from "@react-native-community/datetimepicker";
+import { StyleSheet, View, TouchableOpacity, Text, Switch } from "react-native";
+import TimePicker from "react-native-24h-timepicker";
 
-export default class App extends Component {
+class Example extends Component {
   state = { switchValue: false };
   toggleSwitch = value => {
     this.setState({ switchValue: value });
   };
-  constructor(props) {
-    super(props);
-    this.state = { chosenDate: new Date() };
-
-    this.setDate = this.setDate.bind(this);
+  constructor() {
+    super();
+    this.state = {
+      time: ""
+    };
   }
 
-  setDate(newDate) {
-    this.setState({ chosenDate: newDate });
+  onCancel() {
+    this.TimePicker.close();
+  }
+
+  onConfirm(hour, minute) {
+    this.setState({ time: `${hour}:${minute}` });
+    this.TimePicker.close();
   }
 
   render() {
@@ -29,18 +34,50 @@ export default class App extends Component {
             value={this.state.switchValue}
           />
         </View>
-        <DatePickerIOS
-          date={this.state.chosenDate}
-          onDateChange={this.setDate}
+        <Text style={styles.text}>REACT NATIVE</Text>
+        <Text style={styles.text}>24 HOURS FORMAT TIMEPICKER</Text>
+        <TouchableOpacity
+          onPress={() => this.TimePicker.open()}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>TIMEPICKER</Text>
+        </TouchableOpacity>
+        <Text style={styles.text}>{this.state.time}</Text>
+        <TimePicker
+          ref={ref => {
+            this.TimePicker = ref;
+          }}
+          onCancel={() => this.onCancel()}
+          onConfirm={(hour, minute) => this.onConfirm(hour, minute)}
         />
       </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center"
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingTop: 100
   },
-  switch: { justifyContent: "center", alignItems: "center" }
+  text: {
+    fontSize: 20,
+    marginTop: 10
+  },
+  button: {
+    backgroundColor: "blue",
+    paddingVertical: 11,
+    paddingHorizontal: 17,
+    borderRadius: 3,
+    marginVertical: 50
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600"
+  }
 });
+
+export default Example;
